@@ -3,13 +3,27 @@ function submit() {
     var phrase = document.getElementById("phrase");
     var width = document.getElementById("width");
     var hints = document.getElementById("letters");
+    var disclaimer = document.getElementById("disclaimer");
     var streched = [];
     var lists = [];
     var letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+    var numbers = "1234567890";
+    if (width.innerHTML > input.innerHTML.length) {
+        disclaimer.innerHTML = "Width cannot be longer than the length of the phrase (" + input.innerHTML.length + ")!";
+        return;
+    }
+    for (i = 0; i < width.innerHTML.length; i++) {
+        if (!numbers.includes(width.innerHTML[i])) {
+            disclaimer.innerHTML = "Width must be an interger! >:(";
+            return;
+        }
+    }
     for (i = 0; i < input.innerHTML.length; i++) {
         streched.push(input.innerHTML.charAt(i));
     }
+    
     var k = -1;
+    
     for (i = 0; i < (streched.length / width.innerHTML); i++) {
         var row = phrase.insertRow(-1);
         for (j = 0; j < width.innerHTML; j++) {
@@ -22,6 +36,13 @@ function submit() {
             else if (streched[k] == " " || k >= streched.length) {
                 cell.className = "space";
                 cell.innerHTML = "X";
+            }
+            else if (streched[k].includes("&")) {
+                disclaimer.innerHTML = streched[k] + streched[k+1] + streched[k+2] + streched[k+3] + " is an invalid character.";
+                for (a = -1; a < i; a++) {
+                    phrase.deleteRow(0);
+                }
+                return;
             }
             else {
                 
@@ -65,10 +86,11 @@ function submit() {
             cell.innerHTML = " ";
         }
         k++;
-        if (i % width.innerHTML == width.innerHTML -1) {
+        if (i % width.innerHTML == width.innerHTML - 1) {
             var row = hints.insertRow(0);
             j++;
             k = 0;
         }
     }
+    disclaimer.innerHTML = "If you want to make a new puzzle please refresh the page";
  }
